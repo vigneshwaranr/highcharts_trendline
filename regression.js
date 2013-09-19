@@ -10,7 +10,7 @@
  * choose the license that best suits your project and use it accordingly.
  *
  **/
-function fitData(data) {
+function getTrendlineData(data) {
   
   var regression = function(x, y) {
     var N = x.length;

@@ -10,69 +10,34 @@
  * choose the license that best suits your project and use it accordingly.
  *
  **/
-
-function regression(x, y, typ) {
-  var type = (typ == null) ? 'linear' : typ;
-  var N = x.length;
-  var slope;
-  var intercept;
-  var SX = 0;
-  var SY = 0;
-  var SXX = 0;
-  var SXY = 0;
-  var SYY = 0;
-  var Y = [];
-  var X = [];
-
-  if (type == 'linear') {
-    X = x;
-    Y = y;
-  }
-  else if (type == 'exp' || type == 'exponential') {
-    for (var i = 0; i < y.length; i++) {
-      // ignore points <= 0, log undefined.
-      if (y[i] <= 0) {
-        N--;
-      }
-      else {
-        X.push(x[i]);
-        Y.push(Math.log(y[i]));
-      }
+function fitData(data) {
+  
+  var regression = function(x, y) {
+    var N = x.length;
+    var slope;
+    var intercept;
+    var SX = 0;
+    var SY = 0;
+    var SXX = 0;
+    var SXY = 0;
+    var SYY = 0;
+    var Y = y;
+    var X = x;
+  
+    for (var i = 0; i < N; i++) {
+      SX = SX + X[i];
+      SY = SY + Y[i];
+      SXY = SXY + X[i] * Y[i];
+      SXX = SXX + X[i] * X[i];
+      SYY = SYY + Y[i] * Y[i];
     }
+  
+    slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
+    intercept = (SY - slope * SX) / N;
+  
+    return [slope, intercept];
   }
 
-  for (var i = 0; i < N; i++) {
-    SX = SX + X[i];
-    SY = SY + Y[i];
-    SXY = SXY + X[i] * Y[i];
-    SXX = SXX + X[i] * X[i];
-    SYY = SYY + Y[i] * Y[i];
-  }
-
-  slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
-  intercept = (SY - slope * SX) / N;
-
-  return [slope, intercept];
-}
-
-function linearRegression(X, Y) {
-  var ret;
-  ret = regression(X, Y, 'linear');
-  return [ret[0], ret[1]];
-}
-
-function expRegression(X, Y) {
-  var ret;
-  var x = X;
-  var y = Y;
-  ret = regression(x, y, 'exp');
-  var base = Math.exp(ret[0]);
-  var coeff = Math.exp(ret[1]);
-  return [base, coeff];
-}
-
-function fitData(data, typ) {
-  var type = (typ == null) ? 'linear' : typ;
   var ret;
   var res;
   var x = [];
@@ -92,20 +57,12 @@ function fitData(data, typ) {
     }
   }
 
-  if (type == 'linear') {
-    ret = linearRegression(x, y);
-    for (var i = 0; i < x.length; i++) {
-      res = ret[0] * x[i] + ret[1];
-      ypred.push([x[i], res]);
-    }
+  ret = regression(x, y);
+  for (var i = 0; i < x.length; i++) {
+    res = ret[0] * x[i] + ret[1];
+    ypred.push([x[i], res]);
   }
-  else if (type == 'exp' || type == 'exponential') {
-    ret = expRegression(x, y);
-    for (var i = 0; i < x.length; i++) {
-      res = ret[1] * Math.pow(ret[0], x[i]);
-      ypred.push([x[i], res]);
-    }
-  }
+
   return {
     data: ypred,
     slope: ret[0],

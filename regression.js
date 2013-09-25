@@ -1,13 +1,6 @@
 /**
- * Code for regression extracted from jqplot.trendline.js
- *
- * Version: 1.0.0a_r701
- *
- * Copyright (c) 2009-2011 Chris Leonello
- * jqPlot is currently available for use in all personal or commercial projects
- * under both the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL
- * version 2.0 (http://www.gnu.org/licenses/gpl-2.0.html) licenses. This means that you can
- * choose the license that best suits your project and use it accordingly.
+ * Code for getTrendlineData() extracted from
+ * https://github.com/virtualstaticvoid/highcharts_trendline/blob/65d53dd1ce64648d97a2dbb49444bbb522cec313/regression.js
  *
  **/
 function getTrendlineData(data) {

@@ -36,9 +36,7 @@
  *     line1_data - The new line1 data with intersection point added
  *     line2_data -  // The new line2 data with intersection point added
  * > or returns undefined
- *     if the lines are parallel, 
- *     if the lines are already intersecting (you'll still get the points as arguments to 
- *          onLinesAlreadyMeet callback you passed in user_options),
+ *     if the lines are parallel,
  *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]
  *     if any of the line data has less than 2 points (it's not a line then)
  *     if the user_options argument or any of the options inside it is not in the required format.
@@ -205,48 +203,47 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         } else {
             console.error('onLinesAlreadyMeet must be a function');
         }
-        return;
-    }
-
-    // Validate the intersection points before proceeding further
-    if (typeof opt.validateIntersection === 'function') {
-        if (!opt.validateIntersection(icptX, icptY)) {
+    } else {
+        // Validate the intersection points before proceeding further
+        if (typeof opt.validateIntersection === 'function') {
+            if (!opt.validateIntersection(icptX, icptY)) {
+                return;
+            }
+        } else {
+            console.error('validateIntersection must be a function');
+        }
+    
+        var point_type = Object.prototype.toString.call(opt.icptPoint);
+        if (point_type === '[object Array]') {
+            opt.icptPoint = [icptX, icptY];
+        } else if (point_type === '[object Object]') {
+            opt.icptPoint.x = icptX;
+            opt.icptPoint.y = icptY;
+        } else {
+            console.error('Invalid icptPoint');
             return;
         }
-    } else {
-        console.error('validateIntersection must be a function');
-    }
-
-    var point_type = Object.prototype.toString.call(opt.icptPoint);
-    if (point_type === '[object Array]') {
-        opt.icptPoint = [icptX, icptY];
-    } else if (point_type === '[object Object]') {
-        opt.icptPoint.x = icptX;
-        opt.icptPoint.y = icptY;
-    } else {
-        console.error('Invalid icptPoint');
-        return;
-    }
-
-    var lines = [line1, line2];
-    if (icptX > x1) {
-        // x values must always be sorted in highcharts and many other chart libraries
-        for (var idx = 0; idx < lines.length; idx++) {
-            var line = lines[idx];
-            for (var i = line.length - 1; i >= 0; i--) {
-                if (line[i][0] < icptX) {
-                    line.splice(i + 1, 0, opt.icptPoint);
-                    break;
+    
+        var lines = [line1, line2];
+        if (icptX > x1) {
+            // x values must always be sorted in highcharts and many other chart libraries
+            for (var idx = 0; idx < lines.length; idx++) {
+                var line = lines[idx];
+                for (var i = line.length - 1; i >= 0; i--) {
+                    if (line[i][0] < icptX) {
+                        line.splice(i + 1, 0, opt.icptPoint);
+                        break;
+                    }
                 }
             }
-        }
-    } else {
-        for (var idx = 0; idx < lines.length; idx++) {
-            var line = lines[idx];
-            for (var i = 0; i < line.length; i++) {
-                if (line[i][0] > icptX) {
-                    line.splice(i, 0, opt.icptPoint);
-                    break;
+        } else {
+            for (var idx = 0; idx < lines.length; idx++) {
+                var line = lines[idx];
+                for (var i = 0; i < line.length; i++) {
+                    if (line[i][0] > icptX) {
+                        line.splice(i, 0, opt.icptPoint);
+                        break;
+                    }
                 }
             }
         }

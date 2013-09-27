@@ -75,9 +75,6 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
          * 
          * getLineIntersectionData() exits returning undefined if this function does not return true
          * 
-         * Note: Already intersecting lines may not have the intersection point in the given data array.
-         * If you still don't want the intersection point, set this to a function that returns false.
-         * 
          * @param icptX - intersection point X
          * @param icptY - intersection point Y         
          */
@@ -209,6 +206,10 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         for (var idx = 0; idx < lines.length; idx++) {
             var line = lines[idx];
             for (var i = line.length - 1; i >= 0; i--) {
+                if (line[i][0] == icptX && line[i][1] == icptY) {
+                    line[i] = opt.icptPoint;
+                    break;
+                }
                 if (line[i][0] < icptX) {
                     line.splice(i + 1, 0, opt.icptPoint);
                     break;
@@ -219,6 +220,10 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         for (var idx = 0; idx < lines.length; idx++) {
             var line = lines[idx];
             for (var i = 0; i < line.length; i++) {
+                if (line[i][0] == icptX && line[i][1] == icptY) {
+                    line[i] = opt.icptPoint;
+                    break;
+                }
                 if (line[i][0] > icptX) {
                     line.splice(i, 0, opt.icptPoint);
                     break;

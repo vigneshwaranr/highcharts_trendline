@@ -18,7 +18,16 @@
  * Given two straight line data each of the form [[x1, y1], [x2, y2], ... [xn, yn]]
  * this method will return an object that contains the intersection point and two "new line data"
  * with the intersection point added. (Does not modify the input data!)
- *
+ * 
+ * @param line1_data - Mandatory argument that contains the data of line1 of the form 
+ *                      [[x1, y1], [x2, y2], ... [xn, yn]]
+ * 
+ * @param line2_data - Mandatory argument that contains the data of line2 of the form 
+ *                      [[x1, y1], [x2, y2], ... [xn, yn]]
+ * 
+ * @param user_options - Optional argument that is an object containing custom options that overrides the default
+ *                      behavior of the method. Refer the comments for each option in the opt object for the valid
+ *                      values for that option.
  * 
  * @returns
  * > an object with the following properties
@@ -259,9 +268,15 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
 
 /**
+ * Given any linear chart data of the form [[x1, y1], [x2, y2], ... [xn, yn]]
+ * this method will generate a straight trendline using linear regression.
  * 
- *
- **/
+ * @returns an object containing the following properties
+ *      data - new array containing the data for the straight trendline
+ *      slope - slope of the trendline
+ *      intercept - intercept of the trendline
+ * 
+ */
 function getTrendlineData(data) {
  
     var regression = function(x, y) {

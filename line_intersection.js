@@ -1,15 +1,15 @@
 /*!
  * line_intersection.js javascript library
- * https://github.com/vigneshwaranr/line_intersection.js
- *
- * Includes code extracted from highcharts_trendline library
- * https://github.com/virtualstaticvoid/highcharts_trendline/blob/65d53dd1ce64648d97a2dbb49444bbb522cec313/regression.js
- *
  * Copyright (c) 2013 Vigneshwaran Raveendran <vigneshwaran2007@gmail.com>
- * Copyright (c) 2011-2013 Chris Stefano <virtualstaticvoid@gmail.com>
+ * https://github.com/vigneshwaranr/line_intersection.js
  *
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
+ *
+ *
+ * Code for getTrendlineData method extracted from highcharts_trendline library (MIT license)
+ * Copyright (c) 2011-2013 Chris Stefano <virtualstaticvoid@gmail.com>
+ * https://github.com/virtualstaticvoid/highcharts_trendline/blob/65d53dd1ce64648d97a2dbb49444bbb522cec313/regression.js
  *
  */
 
@@ -39,7 +39,8 @@
  *     if the lines are parallel,
  *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]
  *     if any of the line data has less than 2 points (it's not a line then)
- *     if the user_options argument or any of the options inside it is not in the required format.
+ *     if the user_options argument or any of the options inside it is not in the required format
+ *     if onLinesAlreadyIntersect or validateIntersection callbacks return false
  */
 function getLineIntersectionData(line1_data, line2_data, user_options) {
     var opt = {
@@ -57,55 +58,39 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         icptPoint: [],
 
         /**
-         * Override this method to customize the behavior
-         * if the lines are parallel (never meets). 
+         * Override this method to customize the behavior if the lines are parallel (never meets). 
          * 
          * (like =, ||, //)
          * 
-         * Does not proceed further after this method is called.
+         * getLineIntersectionData() exits returning undefined after this method is called.
          */
         onParallel: function () {
             console.log('Parallel lines can never meet');
         },
 
         /**
-         * Override this method to customize the behavior
-         * if the lines already meet.
+         * Override this method to customize the behavior if the lines already intersect.
          * 
          * (like X, >, <)
          * 
-         * Does not proceed further after this method is called.
+         * getLineIntersectionData() exits returning undefined if this function does not return true
+         * 
+         * Note: Already intersecting lines may not have the intersection point in the given data array.
+         * If you still don't want the intersection point, set this to a function that returns false.
          * 
          * @param icptX - intersection point X
          * @param icptY - intersection point Y         
          */
-        onLinesAlreadyMeet: function (icptX, icptY) {
-            console.log('Lines already meet at (' + icptX + ',' + icptY + ')');
-        },
-
-        /**
-         * Accepts a callback function that returns true or false
-         * 
-         * Use this to validate the intersection points before connecting the lines.
-         *
-         * For example, you might not want the connect the lines if the 
-         * intersection point is too far away.
-         * 
-         * Does not proceed further if the function does not return true
-         * 
-         * @param icptX - intersection point X
-         * @param icptY - intersection point Y         
-         */
-        validateIntersection: function (icptX, icptY) {
+        onLinesAlreadyIntersect: function (icptX, icptY) {
+            // console.log('Lines already meet at (' + icptX + ',' + icptY + ')');
             return true;
         },
 
         /**
-         * Accepts a boolean value or a function that returns 
-         * a boolean value.
+         * Accepts a boolean value or a function that returns a boolean value.
          *
-         * For example, If you don't want the lines to meet beyond the left side
-         * of the first point of either of the lines, 
+         * For example, If you don't want the lines to meet beyond the left side of the first point of
+         * either of the lines, 
          * set canConvergeLeft to false
          *
          * Setting both of them to false has no use.
@@ -198,52 +183,45 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
     if (icptX >= x1 && icptX <= x2 && icptX >= x3 && icptX <= x4) {
         // The two lines already meet (like X, > or <)
-        if (typeof opt.onLinesAlreadyMeet === 'function') {
-            opt.onLinesAlreadyMeet(icptX, icptY);
-        } else {
-            console.error('onLinesAlreadyMeet must be a function');
-        }
-    } else {
-        // Validate the intersection points before proceeding further
-        if (typeof opt.validateIntersection === 'function') {
-            if (!opt.validateIntersection(icptX, icptY)) {
+        if (typeof opt.onLinesAlreadyIntersect === 'function') {
+            if (!opt.onLinesAlreadyIntersect(icptX, icptY)) {
                 return;
             }
         } else {
-            console.error('validateIntersection must be a function');
+            console.error('onLinesAlreadyMeet must be a function');
         }
-    
-        var point_type = Object.prototype.toString.call(opt.icptPoint);
-        if (point_type === '[object Array]') {
-            opt.icptPoint = [icptX, icptY];
-        } else if (point_type === '[object Object]') {
-            opt.icptPoint.x = icptX;
-            opt.icptPoint.y = icptY;
-        } else {
-            console.error('Invalid icptPoint');
-            return;
-        }
-    
-        var lines = [line1, line2];
-        if (icptX > x1) {
-            // x values must always be sorted in highcharts and many other chart libraries
-            for (var idx = 0; idx < lines.length; idx++) {
-                var line = lines[idx];
-                for (var i = line.length - 1; i >= 0; i--) {
-                    if (line[i][0] < icptX) {
-                        line.splice(i + 1, 0, opt.icptPoint);
-                        break;
-                    }
+    }
+
+    var point_type = Object.prototype.toString.call(opt.icptPoint);
+    if (point_type === '[object Array]') {
+        opt.icptPoint = [icptX, icptY];
+    } else if (point_type === '[object Object]') {
+        opt.icptPoint.x = icptX;
+        opt.icptPoint.y = icptY;
+    } else {
+        console.error('Invalid icptPoint');
+        return;
+    }
+
+    var lines = [line1, line2];
+    if (icptX > x1) {
+        // x values must always be sorted in highcharts and many other chart libraries
+        for (var idx = 0; idx < lines.length; idx++) {
+            var line = lines[idx];
+            for (var i = line.length - 1; i >= 0; i--) {
+                if (line[i][0] < icptX) {
+                    line.splice(i + 1, 0, opt.icptPoint);
+                    break;
                 }
             }
-        } else {
-            for (var idx = 0; idx < lines.length; idx++) {
-                var line = lines[idx];
-                for (var i = 0; i < line.length; i++) {
-                    if (line[i][0] > icptX) {
-                        line.splice(i, 0, opt.icptPoint);
-                        break;
-                    }
+        }
+    } else {
+        for (var idx = 0; idx < lines.length; idx++) {
+            var line = lines[idx];
+            for (var i = 0; i < line.length; i++) {
+                if (line[i][0] > icptX) {
+                    line.splice(i, 0, opt.icptPoint);
+                    break;
                 }
             }
         }

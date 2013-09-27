@@ -149,6 +149,8 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
     var line1 = line1_data.slice(),
         line2 = line2_data.slice();
 
+    // Following math formula taken from http://en.wikipedia.org/wiki/Line-line_intersection#Mathematics
+    
     // First and last points of line1
     var x1 = line1[0][0],
         y1 = line1[0][1],
@@ -165,7 +167,6 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
     if (denom == 0) {
         // denom == 0 means lines are parallel or coincident
-        // (Refer: http://en.wikipedia.org/wiki/Line-line_intersection#Mathematics)
         if (typeof opt.onParallel === 'function') {
             opt.onParallel();
         } else {
@@ -192,16 +193,10 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         }
     }
 
-    var line1DX = (x2 - x1),
-        line1DY = (y2 - y1),
-        line2DX = (x4 - x3),
-        line2DY = (y4 - y3),
-        line1M = line1DY / line1DX,
-        line2M = line2DY / line2DX,
-        line1C = y1 - line1M * x1,
-        line2C = y3 - line2M * x3,
-        icptX = -1 * (line1C - line2C) / (line1M - line2M),
-        icptY = line1M * icptX + line1C;
+    var xNumer = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4),
+        yNumer = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4),
+        icptX = xNumer / denom,
+        icptY = yNumer / denom;
 
     if (icptX >= x1 && icptX <= x2 && icptX >= x3 && icptX <= x4) {
         // The two lines already meet (like X, > or <)

@@ -1,7 +1,43 @@
+/*!
+ * line_intersection.js javascript library
+ * https://github.com/vigneshwaranr/line_intersection.js
+ *
+ * Includes code extracted from highcharts_trendline library
+ * https://github.com/virtualstaticvoid/highcharts_trendline/blob/65d53dd1ce64648d97a2dbb49444bbb522cec313/regression.js
+ *
+ * Copyright (c) 2013 Vigneshwaran Raveendran <vigneshwaran2007@gmail.com>
+ * Copyright (c) 2011-2013 Chris Stefano <virtualstaticvoid@gmail.com>
+ *
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ */
 
+
+/**
+ * Given two straight line data each of the form [[x1, y1], [x2, y2], ... [xn, yn]]
+ * this method will return an object that contains the intersection point and two "new line data"
+ * with the intersection point added. (Does not modify the input data!)
+ *
+ * 
+ * @returns
+ * > an object with the following properties
+ *     icptX - The intersection point X
+ *     icptY - The intersection point Y
+ *     line1_data - The new line1 data with intersection point added
+ *     line2_data -  // The new line2 data with intersection point added
+ * > or returns undefined
+ *     if the lines are parallel, 
+ *     if the lines are already intersecting (you'll still get the points as arguments to 
+ *          onLinesAlreadyMeet callback you passed in user_options),
+ *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]
+ *     if any of the line data has less than 2 points (it's not a line then)
+ *     if the user_options argument or any of the options inside it is not in the required format.
+ */
 function getLineIntersectionData(line1_data, line2_data, user_options) {
     var opt = {
-        /* The point object for the intersection points that will be appended to the line arrays.
+        /**
+         * The point array/object for the intersection points that will be inserted to the line arrays.
          * By default the point will be inserted as [icptX, icptY] to both the new lines "that will be returned".
          * (This method won't modify supplied line arrays)
          * 
@@ -13,7 +49,8 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
          */
         icptPoint: [],
 
-        /* Override this method to customize the behavior
+        /**
+         * Override this method to customize the behavior
          * if the lines are parallel (never meets). 
          * 
          * (like =, ||, //)
@@ -24,7 +61,8 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             console.log('Parallel lines can never meet');
         },
 
-        /* Override this method to customize the behavior
+        /**
+         * Override this method to customize the behavior
          * if the lines already meet.
          * 
          * (like X, >, <)
@@ -38,7 +76,8 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             console.log('Lines already meet at (' + icptX + ',' + icptY + ')');
         },
 
-        /* Accepts a function that returns true or false
+        /**
+         * Accepts a callback function that returns true or false
          * 
          * Use this to validate the intersection points before connecting the lines.
          *
@@ -54,10 +93,11 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             return true;
         },
 
-        /* Accepts a boolean value or a function that returns 
+        /**
+         * Accepts a boolean value or a function that returns 
          * a boolean value.
          *
-         * If you don't want the lines to meet beyond the left side
+         * For example, If you don't want the lines to meet beyond the left side
          * of the first point of either of the lines, 
          * set canConvergeLeft to false
          *
@@ -91,8 +131,8 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
     }
 
     for (var key in user_options) {
-        if (opt.hasOwnProperty(key)) { //If the user given options contain any valid option, ...
-            opt[key] = user_options[key]; // ..that option will be put in the opt array.
+        if (opt.hasOwnProperty(key)) { // If the user given options contain any valid option, ...
+            opt[key] = user_options[key]; // ..that option will be put in the opt object.
         }
     }
 
@@ -100,11 +140,14 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
     var line1 = line1_data.slice(),
         line2 = line2_data.slice();
 
+    // First and last points of line1
     var x1 = line1[0][0],
         y1 = line1[0][1],
         x2 = line1[line1.length - 1][0],
-        y2 = line1[line1.length - 1][1],
-        x3 = line2[0][0],
+        y2 = line1[line1.length - 1][1];
+    
+    // First and last points of line2
+    var x3 = line2[0][0],
         y3 = line2[0][1],
         x4 = line2[line2.length - 1][0],
         y4 = line2[line2.length - 1][1];
@@ -113,6 +156,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
     if (denom == 0) {
         // denom == 0 means lines are parallel or coincident
+        // (Refer: http://en.wikipedia.org/wiki/Line-line_intersection#Mathematics)
         if (typeof opt.onParallel === 'function') {
             opt.onParallel();
         } else {
@@ -155,14 +199,18 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         if (typeof opt.onLinesAlreadyMeet === 'function') {
             opt.onLinesAlreadyMeet(icptX, icptY);
         } else {
-            console.log('onLinesAlreadyMeet must be a function');
+            console.error('onLinesAlreadyMeet must be a function');
         }
         return;
     }
 
     // Validate the intersection points before proceeding further
-    if (typeof opt.validateIntersection === 'function' && !opt.validateIntersection(icptX, icptY)) {
-        return;
+    if (typeof opt.validateIntersection === 'function') {
+        if (!opt.validateIntersection(icptX, icptY)) {
+            return;
+        }
+    } else {
+        console.error('validateIntersection must be a function');
     }
 
     var point_type = Object.prototype.toString.call(opt.icptPoint);
@@ -211,67 +259,66 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
 
 /**
- * Code for getTrendlineData() extracted from
- * https://github.com/virtualstaticvoid/highcharts_trendline/blob/65d53dd1ce64648d97a2dbb49444bbb522cec313/regression.js
+ * 
  *
  **/
 function getTrendlineData(data) {
-  
-  var regression = function(x, y) {
-    var N = x.length;
-    var slope;
-    var intercept;
-    var SX = 0;
-    var SY = 0;
-    var SXX = 0;
-    var SXY = 0;
-    var SYY = 0;
-    var Y = y;
-    var X = x;
-  
-    for (var i = 0; i < N; i++) {
-      SX = SX + X[i];
-      SY = SY + Y[i];
-      SXY = SXY + X[i] * Y[i];
-      SXX = SXX + X[i] * X[i];
-      SYY = SYY + Y[i] * Y[i];
+ 
+    var regression = function(x, y) {
+        var N = x.length;
+        var slope;
+        var intercept;
+        var SX = 0;
+        var SY = 0;
+        var SXX = 0;
+        var SXY = 0;
+        var SYY = 0;
+        var Y = y;
+        var X = x;
+        
+        for (var i = 0; i < N; i++) {
+            SX = SX + X[i];
+            SY = SY + Y[i];
+            SXY = SXY + X[i] * Y[i];
+            SXX = SXX + X[i] * X[i];
+            SYY = SYY + Y[i] * Y[i];
+        }
+        
+        slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
+        intercept = (SY - slope * SX) / N;
+        
+        return [slope, intercept];
     }
-  
-    slope = (N * SXY - SX * SY) / (N * SXX - SX * SX);
-    intercept = (SY - slope * SX) / N;
-  
-    return [slope, intercept];
-  }
 
-  var ret;
-  var res;
-  var x = [];
-  var y = [];
-  var ypred = [];
+    var ret;
+    var res;
+    var x = [];
+    var y = [];
+    var ypred = [];
 
-  for (i = 0; i < data.length; i++) {
-    if (data[i] != null && Object.prototype.toString.call(data[i]) === '[object Array]') {
-      if (data[i] != null && data[i][0] != null && data[i][1] != null) {
-        x.push(data[i][0]);
-        y.push(data[i][1]);
-      }
+    for (i = 0; i < data.length; i++) {
+        if (data[i] != null && Object.prototype.toString.call(data[i]) === '[object Array]') {
+            if (data[i] != null && data[i][0] != null && data[i][1] != null) {
+                x.push(data[i][0]);
+                y.push(data[i][1]);
+            }
+        }
+        else if(data[i] != null && typeof data[i] === 'number' ) { // If type of X axis is category
+            x.push(i);
+            y.push(data[i]);
+        }
     }
-    else if(data[i] != null && typeof data[i] === 'number' ){//If type of X axis is category
-      x.push(i);
-      y.push(data[i]);
+
+    ret = regression(x, y);
+    for (var i = 0; i < x.length; i++) {
+        res = ret[0] * x[i] + ret[1];
+        ypred.push([x[i], res]);
     }
-  }
 
-  ret = regression(x, y);
-  for (var i = 0; i < x.length; i++) {
-    res = ret[0] * x[i] + ret[1];
-    ypred.push([x[i], res]);
-  }
-
-  return {
-    data: ypred,
-    slope: ret[0],
-    intercept: ret[1]
-  };
+    return {
+        data: ypred,
+        slope: ret[0],
+        intercept: ret[1]
+    };
 }
 

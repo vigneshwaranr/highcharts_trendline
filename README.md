@@ -9,7 +9,7 @@ For other libraries, you will need to convert the data to this form and back aft
 ## Methods
 * **getLineIntersectionData(line1_data, line2_data, user_options)**
 
-  Given two straight line data each of the form `[[x1, y1], [x2, y2], ... [xn, yn]]` this method will return an object that contains the intersection point and two "new line data" with the intersection point added. (Does not modify the input data!)
+  Given two straight line data each of the form `[[x1, y1], [x2, y2], ... [xn, yn]]` this method will return an object that contains the intersection points and two "new line data" with the intersection point added. (Does not modify the input data!)
   
   If your data is not from a straight line but some chart data, use `getTrendlineData` to generate a straight trendline out of that data using Linear Regression.
   
@@ -40,7 +40,7 @@ For other libraries, you will need to convert the data to this form and back aft
  *     icptX - The intersection point X
  *     icptY - The intersection point Y
  *     line1_data - The new line1 data with intersection point added
- *     line2_data -  // The new line2 data with intersection point added
+ *     line2_data - The new line2 data with intersection point added
  * > or returns undefined
  *     if the lines are parallel,
  *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]

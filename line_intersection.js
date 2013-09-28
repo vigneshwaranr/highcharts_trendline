@@ -218,13 +218,13 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             }
         }
         
+        var isXAscending = line[0][0] <= line[line.length - 1][0];
+        var isYAscending = line[0][1] <= line[line.length - 1][1];
+        
         // Otherwise push it
         line.push(opt.icptPoint);
         
         // and sort the array
-        var isXAscending = line[0][0] <= line[line.length - 1][0];
-        var isYAscending = line[0][1] <= line[line.length - 1][1];
-        
         line.sort(function(a, b) {
             var ax = a[0] || a.x,
                 ay = a[1] || a.y,

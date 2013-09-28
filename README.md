@@ -132,6 +132,83 @@ Output:
 
 ![getTrendlineData screenshot 1](screenshots/getTrendlineData_scr1.png)
 
+**Example using both methods**
+```javascript
+jQuery(function () {
+    var data1 = [
+        [Date.UTC(2013, 0, 1), 50],
+        [Date.UTC(2013, 0, 2), 58],
+        [Date.UTC(2013, 0, 3), 58],
+        [Date.UTC(2013, 0, 4), 58]
+    ];
+    var data2 = [
+        [Date.UTC(2013, 0, 1), 0],
+        [Date.UTC(2013, 0, 2), 12],
+        [Date.UTC(2013, 0, 3), 18],
+        [Date.UTC(2013, 0, 4), 22]
+    ];
+    var data1_t = getTrendlineData(data1).data;
+    var data2_t = getTrendlineData(data2).data;
+    var options = {
+        icptPoint: {
+            //name: 'Possible release date',
+            marker: {
+                enabled: true,
+                fillColor: '#003300',
+                lineColor: '#003300'
+            }
+        },
+        canConvergeLeft: false
+    };
+    var forecast = getLineIntersectionData(data1_t, data2_t, options);
+
+    var chart_linear = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container'
+        },
+        colors: ['#990000', '#4679BD', '#990000', '#4679BD'],
+        xAxis: {
+            type: 'datetime',
+            gridLineWidth: 1,
+            gridLineDashStyle: 'shortdot'
+        },
+        yAxis: {
+            min: 0,
+            gridLineDashStyle: 'shortdot'
+        },
+        title: {
+            text: 'Estimating release date'
+        },
+        series: [{
+            name: 'Total issues',
+            data: data1
+        }, {
+            name: 'Closed issues',
+            data: data2
+        }, {
+            name: 'Total issues trend',
+            //getLineIntersectionData() may return undefined if lines can not intersect
+            data: forecast && forecast.line1_data || data1_t,
+            marker: {
+                enabled: false
+            },
+            dashStyle: 'longDash'
+        }, {
+            name: 'Closed issues trend',
+            data: forecast && forecast.line2_data || data2_t,
+            marker: {
+                enabled: false
+            },
+            dashStyle: 'longDash',
+        }]
+    });
+});
+```
+
+Output:
+
+![Trend forecast](screenshots/trend_forecast.png)
+
 ##Credits
 * [virtualstaticvoid/highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline) - The getTrendlineData method is extracted from this library which itself extracted code from [jqplot.trendline.js](http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html)
 * [John Kiernander](http://stackoverflow.com/a/18850800/883832) - for giving me a groundwork that inspired me to do this

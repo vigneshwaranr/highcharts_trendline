@@ -15,7 +15,9 @@ A JavaScript library to find the intersection of two straight lines (useful for 
 
 ## Usage
 
-#### getLineIntersectionData(line1_data, line2_data, /*optional*/ user_options)
+### getLineIntersectionData(line1_data, line2_data, /*optional*/ user_options)
+
+**Documentation**
 
 ```javascript
 /**
@@ -28,6 +30,19 @@ A JavaScript library to find the intersection of two straight lines (useful for 
  * @param user_options - Optional argument that is an object containing custom options that overrides the default
  *                      behavior of the method. Refer the comments for each option in the opt object for the valid
  *                      values for that option.
+ *
+ * @returns
+ * > an object with the following properties
+ *     icptX - The intersection point X
+ *     icptY - The intersection point Y
+ *     line1_data - The new line1 data with intersection point added
+ *     line2_data -  // The new line2 data with intersection point added
+ * > or returns undefined
+ *     if the lines are parallel,
+ *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]
+ *     if any of the line data has less than 2 points (it's not a line then)
+ *     if the user_options argument or any of the options inside it is not in the required format
+ *     if any callback set in user_options returns false
  */
  ```
 
@@ -39,3 +54,55 @@ var forecast = getLineIntersectionData(line1, line2);
 JSON.stringify(forecast)
 >> {"icptX": 1, "icptY": 1, "line1_data": [[0,1],[1,1],[2,1]], "line2_data": [[1,0],[1,1],[1,2]]}
 ```
+
+
+### getTrendlineData(data)
+The code, example and screenshot were all extracted from [highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline/tree/65d53dd1ce64648d97a2dbb49444bbb522cec313)
+
+**Documentation**
+```javascript
+/** 
+ * @param data - Mandatory argument that contains the chart data of the form 
+ *                 [[x1, y1], [x2, y2], ... [xn, yn]]
+ *
+ * @returns an object containing the following properties
+ *      data - new array containing the data for the straight trendline
+ *      slope - slope of the trendline
+ *      intercept - intercept of the trendline
+ * 
+ */
+```
+
+**Example**
+```javascript
+jQuery(function () {
+    // E.g. source data
+    var sourceData = [
+        [106.4, 271.8], [129.2, 213.4],
+        [295.6, 432.3], [154.4, 398.1],
+        [129.9, 133.2], [271.5, 432.1],
+        [144.0, 134.7], [176.0, 399.2],
+        [216.4, 319.2], [194.1, 542.1],
+        [435.6, 665.3], [348.5, 435.9]
+    ];
+
+    var chart_linear = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container'
+        },
+        series: [{
+            type: 'scatter',
+            data: sourceData
+        }, {
+            marker: {
+                enabled: false
+            },
+            /* function returns data for trend-line */
+            data: getTrendlineData(sourceData).data
+        }]
+    });
+});
+```
+Output:
+
+![getTrendlineData screenshot 1](screenshots/getTrendlineData_scr1.png)

@@ -216,6 +216,4 @@ Output:
 ##Credits
 * [virtualstaticvoid/highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline) - The getTrendlineData method is extracted from this library which itself extracted code from [jqplot.trendline.js](http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html)
 * [John Kiernander](http://stackoverflow.com/a/18850800/883832) - for giving me a groundwork that inspired me to do this
-* [Highcharts library](http://www.highcharts.com/) - for not having this feature already thereby necessitating me to do this
-* [Wikipedia](http://en.wikipedia.org/w/index.php?title=Line-line_intersection&oldid=570896016#Mathematics) - and whoever wrote the maths formula there
-* [Harish Kayarohanam](http://math.stackexchange.com/users/30423/harish-kayarohanam) - my maths guru
+* [Wikipedia](http://en.wikipedia.org/w/index.php?title=Line-line_intersection&oldid=570896016#Mathematics) - for the line intersection formula

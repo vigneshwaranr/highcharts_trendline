@@ -15,7 +15,7 @@ A JavaScript library to find the intersection of two straight lines (useful for 
 
 ## Usage
 
-### getLineIntersectionData(line1_data, line2_data, /*optional*/ user_options)
+### getLineIntersectionData(line1_data, line2_data, user_options)
 
 **Documentation**
 
@@ -54,6 +54,31 @@ var forecast = getLineIntersectionData(line1, line2);
 JSON.stringify(forecast)
 >> {"icptX": 1, "icptY": 1, "line1_data": [[0,1],[1,1],[2,1]], "line2_data": [[1,0],[1,1],[1,2]]}
 ```
+
+**Example with chart**
+```javascript
+jQuery(function () {
+    var data1 = [[2, 6], [12, 8]];
+    var data2 = [[3, 1], [10, 5]];
+    
+    var forecast = getLineIntersectionData(data1, data2);
+    
+    var chart_linear = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container'
+        },
+        series: [{
+            //getLineIntersectionData() may return undefined if lines can not intersect
+            data: forecast && forecast.line1_data || data1
+        }, {
+            data: forecast && forecast.line2_data || data2
+        }]
+    });
+});
+```
+Output:
+
+![Basic chart example](screenshots/getLineIntersectionData_basic_chart_example.png)
 
 
 ### getTrendlineData(data)
@@ -106,3 +131,10 @@ jQuery(function () {
 Output:
 
 ![getTrendlineData screenshot 1](screenshots/getTrendlineData_scr1.png)
+
+##Credits
+* [virtualstaticvoid/highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline) - The getTrendlineData method is extracted from this library which itself extracted code from [jqplot.trendline.js](http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html)
+* [John Kiernander](http://stackoverflow.com/a/18850800/883832) - for giving me a groundwork that inspired me to do this
+* [Highcharts library](http://www.highcharts.com/) - for not having this feature already thereby necessitating me to do this
+* [Wikipedia](http://en.wikipedia.org/w/index.php?title=Line-line_intersection&oldid=570896016#Mathematics) - and whoever wrote the maths formula there
+* [Harish Kayarohanam](http://math.stackexchange.com/users/30423/harish-kayarohanam) - my maths guru

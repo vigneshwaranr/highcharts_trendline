@@ -82,7 +82,7 @@ Output:
 
 
 ### getTrendlineData(data)
-The code, example and screenshot were all extracted from [highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline/tree/65d53dd1ce64648d97a2dbb49444bbb522cec313)
+The code and this example were extracted from [highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline/tree/65d53dd1ce64648d97a2dbb49444bbb522cec313)
 
 **Documentation**
 ```javascript

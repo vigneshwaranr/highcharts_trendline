@@ -206,7 +206,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
     // Inserting icptPoint into both lines
     var _lines = [line1, line2];
-    nextline:
+    nextLine:
     for (var idx = 0; idx < _lines.length; idx++) {
         var line = _lines[idx];
         

@@ -16,7 +16,7 @@
 
 /**
  * Given two straight line data each of the form [[x1, y1], [x2, y2], ... [xn, yn]]
- * this method will return an object that contains the intersection point and two "new line data"
+ * this method will return an object that contains the intersection points and two "new line data"
  * with the intersection point added. (Does not modify the input data!)
  * 
  * @param line1_data - Mandatory argument that contains the data of line1 of the form 
@@ -34,7 +34,7 @@
  *     icptX - The intersection point X
  *     icptY - The intersection point Y
  *     line1_data - The new line1 data with intersection point added
- *     line2_data -  // The new line2 data with intersection point added
+ *     line2_data - The new line2 data with intersection point added
  * > or returns undefined
  *     if the lines are parallel,
  *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]

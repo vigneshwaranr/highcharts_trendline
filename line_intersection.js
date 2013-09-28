@@ -84,13 +84,13 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         },
 
         /**
-         * Accepts a boolean value or a function that returns a boolean value.
+         * Accepts a boolean value.
          *
          * For example, If you don't want the lines to meet beyond the left side of the first point of
          * either of the lines, 
          * set canConvergeLeft to false
          *
-         * Setting both of them to false has no use.
+         * Note: Setting both of them to false has no use.
          */
         canConvergeLeft: true,
         canConvergeRight: true
@@ -150,25 +150,29 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         if (typeof opt.onParallel === 'function') {
             opt.onParallel();
         } else {
-            console.log('onParallel must be a function');
+            console.error('onParallel must be a function');
         }
         return;
     } else if (denom > 0) {
         // denom > 0 means lines converge towards right 
         // (like > or X)
-        if (typeof opt.canConvergeRight === 'boolean' && !opt.canConvergeRight) {
-            return;
-        }
-        if (typeof opt.canConvergeRight === 'function' && !opt.canConvergeRight()) {
+        if (typeof opt.canConvergeRight === 'boolean') {
+            if (!opt.canConvergeRight) {
+                return;
+            }
+        } else {
+            console.error('canConvergeRight must be a boolean');
             return;
         }
     } else {
         // denom < 0 means lines converge towards left
-        // (like <)
-        if (typeof opt.canConvergeLeft === 'boolean' && !opt.canConvergeLeft) {
-            return;
-        }
-        if (typeof opt.canConvergeLeft === 'function' && !opt.canConvergeLeft()) {
+        // (like < or L)
+        if (typeof opt.canConvergeLeft === 'boolean') {
+            if (!opt.canConvergeLeft) {
+                return;
+            }
+        } else {
+            console.error('canConvergeLeft must be a boolean');
             return;
         }
     }
@@ -200,36 +204,38 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         return;
     }
 
-    var lines = [line1, line2];
-    if (icptX > x1) {
-        // x values must always be sorted in highcharts and many other chart libraries
-        for (var idx = 0; idx < lines.length; idx++) {
-            var line = lines[idx];
-            for (var i = line.length - 1; i >= 0; i--) {
-                if (line[i][0] == icptX && line[i][1] == icptY) {
-                    line[i] = opt.icptPoint;
-                    break;
-                }
-                if (line[i][0] < icptX) {
-                    line.splice(i + 1, 0, opt.icptPoint);
-                    break;
-                }
+    // Inserting icptPoint into both lines
+    var _lines = [line1, line2];
+    nextline:
+    for (var idx = 0; idx < _lines.length; idx++) {
+        var line = _lines[idx];
+        
+        // Check if point already exists
+        for (var i = 0; i < line.length; i++) {
+            if (line[i][0] == icptX && line[i][1] == icptY) {
+                line[i] = opt.icptPoint;
+                continue nextLine;
             }
         }
-    } else {
-        for (var idx = 0; idx < lines.length; idx++) {
-            var line = lines[idx];
-            for (var i = 0; i < line.length; i++) {
-                if (line[i][0] == icptX && line[i][1] == icptY) {
-                    line[i] = opt.icptPoint;
-                    break;
-                }
-                if (line[i][0] > icptX) {
-                    line.splice(i, 0, opt.icptPoint);
-                    break;
-                }
-            }
-        }
+        
+        // Otherwise push it
+        line.push(opt.icptPoint);
+        
+        // and sort the array
+        var isXAscending = line[0][0] <= line[line.length - 1][0];
+        var isYAscending = line[0][1] <= line[line.length - 1][1];
+        
+        line.sort(function(a, b) {
+            var ax = a[0] || a.x,
+                ay = a[1] || a.y,
+                bx = b[0] || b.x,
+                by = b[1] || b.y;
+            if (ax < bx) return isXAscending ? -1 :  1;
+            if (ax > bx) return isXAscending ?  1 : -1;
+            if (ay < by) return isYAscending ? -1 :  1;
+            if (ay > by) return isYAscending ?  1 : -1;
+            return 0;
+        });
     }
 
     return {

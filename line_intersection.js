@@ -40,7 +40,7 @@
  *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]
  *     if any of the line data has less than 2 points (it's not a line then)
  *     if the user_options argument or any of the options inside it is not in the required format
- *     if onLinesAlreadyIntersect or validateIntersection callbacks return false
+ *     if any callback set in user_options returns false
  */
 function getLineIntersectionData(line1_data, line2_data, user_options) {
     var opt = {

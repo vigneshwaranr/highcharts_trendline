@@ -2,6 +2,10 @@
 
 A JavaScript library to find the intersection of two straight lines (useful for charting libraries). Also includes a function that generate trendline from a chart data.
 
+Written originally for highcharts but can work with any charting library as long as they support line data in the format
+`[[x1, y1], [x2, y2], ... ]` such as [Flot](http://www.flotcharts.org/), [PlotKit](http://www.liquidx.net/plotkit/), [JS Charts](http://www.jscharts.com/) etc.
+For other libraries, you will need to convert the data to this form and back after getting the intersection data.
+
 ## Methods
 * **getLineIntersectionData(line1_data, line2_data, user_options)**
 

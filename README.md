@@ -162,7 +162,13 @@ jQuery(function () {
                 lineColor: '#003300'
             }
         },
-        canConvergeLeft: false
+        validateIntersection: function(icptX, icptY) {
+            // Don't connect the lines if the intersection point is
+            // to the left of the chart
+            if (icptX < data1_t[0][0] || icptY < data2_t[0][1]) {
+                return false;
+            }
+        }
     };
     var forecast = getLineIntersectionData(data1_t, data2_t, options);
 

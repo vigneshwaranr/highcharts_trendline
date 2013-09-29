@@ -205,7 +205,13 @@ For other libraries, you will need to convert the data to this form and back aft
                 <span class="nx">lineColor</span><span class="o">:</span> <span class="s1">'#003300'</span>
             <span class="p">}</span>
         <span class="p">},</span>
-        <span class="nx">canConvergeLeft</span><span class="o">:</span> <span class="kc">false</span>
+        <span class="nx">validateIntersection</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">icptX</span><span class="p">,</span> <span class="nx">icptY</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Don't connect the lines if the intersection point is</span>
+            <span class="c1">// to the left of the chart</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">icptX</span> <span class="o">&lt;</span> <span class="nx">data1_t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="nx">icptY</span> <span class="o">&lt;</span> <span class="nx">data2_t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
     <span class="p">};</span>
     <span class="kd">var</span> <span class="nx">forecast</span> <span class="o">=</span> <span class="nx">getLineIntersectionData</span><span class="p">(</span><span class="nx">data1_t</span><span class="p">,</span> <span class="nx">data2_t</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
 

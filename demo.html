@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="line_intersection.js : A JavaScript library to find the intersection of two straight lines (useful for charting libraries)" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>line_intersection.js</title>
+    <script src="https://rawgithub.com/vigneshwaranr/line_intersection.js/master/line_intersection.js"></script>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/vigneshwaranr/line_intersection.js">View on GitHub</a>
+
+          <h1 id="project_title">line_intersection.js</h1>
+          <h2 id="project_tagline">A JavaScript library to find the intersection of two straight lines (useful for charting libraries)</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Forecast Demo</h1>
+        <div id="container" style="height: 600px"></div>
+        <script type="text/javascript">
+            jQuery(function () {
+                var data1 = [
+                    [Date.UTC(2013, 0, 1), 50],
+                    [Date.UTC(2013, 0, 2), 58],
+                    [Date.UTC(2013, 0, 3), 58],
+                    [Date.UTC(2013, 0, 4), 58]
+                ];
+                var data2 = [
+                    [Date.UTC(2013, 0, 1), 0],
+                    [Date.UTC(2013, 0, 2), 12],
+                    [Date.UTC(2013, 0, 3), 18],
+                    [Date.UTC(2013, 0, 4), 22]
+                ];
+                var data1_t = getTrendlineData(data1).data;
+                var data2_t = getTrendlineData(data2).data;
+                var options = {
+                    icptPoint: {
+                        //name: 'Possible release date',
+                        marker: {
+                            enabled: true,
+                            fillColor: '#003300',
+                            lineColor: '#003300'
+                        }
+                    },
+                    validateIntersection: function(icptX, icptY) {
+                        // Don't connect the lines if the intersection point is
+                        // to the left of the chart
+                        if (icptX < data1_t[0][0] || icptX < data2_t[0][0]) {
+                            return false;
+                        }
+                    }
+                };
+                var forecast = getLineIntersectionData(data1_t, data2_t, options);
+            
+                var chart_linear = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'container'
+                    },
+                    colors: ['#990000', '#4679BD', '#990000', '#4679BD'],
+                    xAxis: {
+                        type: 'datetime',
+                        gridLineWidth: 1,
+                        gridLineDashStyle: 'shortdot'
+                    },
+                    yAxis: {
+                        min: 0,
+                        gridLineDashStyle: 'shortdot'
+                    },
+                    title: {
+                        text: 'Estimating release date'
+                    },
+                    series: [{
+                        name: 'Total issues',
+                        data: data1
+                    }, {
+                        name: 'Closed issues',
+                        data: data2
+                    }, {
+                        name: 'Total issues trend',
+                        //getLineIntersectionData() may return undefined if lines can not intersect
+                        data: forecast && forecast.line1_data || data1_t,
+                        marker: {
+                            enabled: false
+                        },
+                        dashStyle: 'longDash'
+                    }, {
+                        name: 'Closed issues trend',
+                        data: forecast && forecast.line2_data || data2_t,
+                        marker: {
+                            enabled: false
+                        },
+                        dashStyle: 'longDash',
+                    }]
+                });
+            });
+        </script>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">line_intersection.js maintained by <a href="https://github.com/vigneshwaranr">vigneshwaranr</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -219,6 +219,8 @@ Output:
 
 ![Trend forecast](https://raw.github.com/vigneshwaranr/line_intersection.js/master/screenshots/trend_forecast.png)
 
+See live demo for this chart [here](http://vigneshwaranr.github.io/line_intersection.js/demo.html)
+
 ##Tests
 Live unit tests available [here](http://vigneshwaranr.github.io/line_intersection.js/tests.html)
 

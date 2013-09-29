@@ -219,6 +219,9 @@ Output:
 
 ![Trend forecast](https://raw.github.com/vigneshwaranr/line_intersection.js/master/screenshots/trend_forecast.png)
 
+##Tests
+Live unit tests available [here](http://vigneshwaranr.github.io/line_intersection.js/tests.html)
+
 ##Credits
 * [virtualstaticvoid/highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline) - The getTrendlineData method is extracted from this library which itself extracted code from [jqplot.trendline.js](http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html)
 * [John Kiernander](http://stackoverflow.com/a/18850800/883832) - for giving me a groundwork that inspired me to do this

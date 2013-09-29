@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="line_intersection.js : A JavaScript library to find the intersection of two straight lines (useful for charting libraries)" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>line_intersection.js</title>
+    <script src="https://rawgithub.com/vigneshwaranr/line_intersection.js/master/line_intersection.js"></script>
+    <style type="text/css">
+      .pass,.fail {
+        padding: 20px 0px;
+      }
+      
+      .pass:before {
+        content:'PASS: ';
+        color: blue;
+        font-weight: bold;
+      }
+      .fail:before {
+        content:'FAIL: ';
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/vigneshwaranr/line_intersection.js">View on GitHub</a>
+
+          <h1 id="project_title">line_intersection.js</h1>
+          <h2 id="project_tagline">A JavaScript library to find the intersection of two straight lines (useful for charting libraries)</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Unit Tests</h1>
+        <ul id="output"></ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">line_intersection.js maintained by <a href="https://github.com/vigneshwaranr">vigneshwaranr</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+  <script type="text/javascript">
+    var output = document.getElementById('output');
+    
+    function assert(outcome, description) {
+        var li = document.createElement('li');
+        li.className = outcome ? 'pass' : 'fail';
+        li.innerHTML = description;
+    
+        output.appendChild(li);
+    };
+    
+    function checkIntersection(intersect, x, y) {
+        function lineContains(line, x, y) {
+            for (var i = 0; i < line.length; i++) {
+                if (line[i][0] === x && line[i][1] === y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return intersect.icptX === x &&
+               intersect.icptY === y &&
+               lineContains(intersect.line1_data, x, y) &&
+               lineContains(intersect.line2_data, x, y);
+    }
+  </script>
+  <script type="text/javascript">
+    (function() {
+        assert(getLineIntersectionData() === undefined,
+               'getLineIntersectionData() === undefined');
+    })();
+    
+    (function() {
+        var line = [[0, 0], [1, 1]];
+        assert(getLineIntersectionData(line) === undefined,
+               'getLineIntersectionData(onlyOneLine) === undefined');
+    })();
+    
+    (function() {
+        var line1 = [[0, 0], [1, 1]];
+        var invalidLineFormat = [0, 0];
+        assert(getLineIntersectionData(line1, invalidLineFormat) === undefined,
+               'getLineIntersectionData(line1, invalidLineFormat) === undefined');
+    })();
+    
+    (function() {
+        var line1 = [[0, 0], [1, 0]];
+        var lineWithOnlyOnePoint = [[0, 1]];
+        assert(getLineIntersectionData(line1, lineWithOnlyOnePoint, "invalidOptions") === undefined,
+               'getLineIntersectionData(line1, lineWithOnlyOnePoint, "invalidOptions") === undefined');
+    })();
+    
+    
+    (function() {
+        var line1 = [[0, 0], [1, 0]];
+        var line2 = [[0, 1], [1, 1]];
+        assert(getLineIntersectionData(line1, line2, "invalidOptions") === undefined,
+               'getLineIntersectionData(line1, line2, "invalidOptions") === undefined');
+    })();
+    
+    (function() {
+        var line1 = [[0, 0], [1, 0]];
+        var line2 = [[0, 1], [1, 1]];
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(intersect === undefined,
+               'Parallel lines (=) L1 [[0, 0], [1, 0]] and ' +
+               'L2 [[0, 1], [1, 1]] can never meet');
+    })();
+    
+    (function() {
+        var line1 = [[0, 0], [0, 1]];
+        var line2 = [[1, 0], [1, 1]];
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(intersect === undefined,
+               'Parallel lines (||) L1 [[0, 0], [0, 1]] and ' +
+               'L2 [[1, 0], [1, 1]] can never meet');
+    })();
+    
+    (function() {
+        var line1 = [[1, 0], [2, 1]];
+        var line2 = [[0, 1], [1, 2]];
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(intersect === undefined,
+               'Parallel lines (//) L1 [[1, 0], [2, 1]] and ' +
+               'L2 [[0, 1], [1, 2]] can never meet');
+    })();
+    
+    (function() {
+        var line1 = [[0, 1], [1, 0]];
+        var line2 = [[0, 2], [2, 0]];
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(intersect === undefined,
+               'Parallel lines (\\\\) L1 [[0, 1], [1, 0]] and ' +
+               'L2 [[0, 2], [2, 0]] can never meet');
+    })();
+    
+    (function() {
+        var line1 = [[0, 1], [2, 1]];
+        var line2 = [[1, 0], [1, 2]];
+        
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 1, 1),
+               'Intersection point of L1 [[0, 1], [2, 1]] and ' +
+               'L2 [[1, 0], [1, 2]] is (1, 1)');
+    })();
+    
+    (function() {
+        var line1 = [[-10, -10], [50, 35]];
+        var line2 = [[-5, 10], [55, -10]];
+        // Verified using http://www.mathopenref.com/coordintersection.html
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 10, 5),
+               'Intersection point of L1 [[-10, -10], [50, 35]] and ' +
+               'L2 [[-5, 10], [55, -10]] is (10, 5)');
+    })();
+    
+    (function() {
+        var line1 = [[-5, 10], [10, 15]];
+        var line2 = [[10, 5], [15, 10]];
+        // Verified using http://www.mathopenref.com/coordintersection.html
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 25, 20),
+               'Intersection point of L1 [[-5, 10], [10, 15]] and ' +
+               'L2 [[10, 5], [15, 10]] is (25, 20)');
+    })();
+    
+    (function() {
+        var line1 = [[-5, 25], [5, 20]];
+        var line2 = [[15, 20], [20, 15]];
+        // Verified using http://www.mathopenref.com/coordintersection.html
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 25, 10),
+               'Intersection point of L1 [[-5, 25], [5, 20]] and ' +
+               'L2 [[15, 20], [20, 15]] is (25, 10)');
+    })();
+    
+    (function() {
+        var line1 = [[20, 25], [15, 15]];
+        var line2 = [[25, 15], [30, 20]];
+        // Verified using http://www.mathopenref.com/coordintersection.html
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 5, -5),
+               'Intersection point of L1 [[20, 25], [15, 15]] and ' +
+               'L2 [[25, 15], [30, 20]] is (5, -5)');
+    })();
+    
+    (function() {
+        var line1 = [[55, 5], [45, 10]];
+        var line2 = [[15, 25], [30, 10]];
+        // Verified using http://www.mathopenref.com/coordintersection.html
+        var intersect = getLineIntersectionData(line1, line2);
+        assert(checkIntersection(intersect, 15, 25),
+               'Intersection point of L1 [[55, 5], [45, 10]] and ' +
+               'L2 [[15, 25], [30, 10]] is (15, 25)');
+    })();
+    
+    (function() {
+        var line1 = [[0, 1], [2, 1]];
+        var line2 = [[1, 0], [1, 2]];
+        
+        var intersect = getLineIntersectionData(line1, line2, {
+            onLinesAlreadyIntersect: function(x, y) {return false;}
+        });
+        assert(intersect === undefined,
+               'For line1 = [[0, 1], [2, 1]], line2 = [[1, 0], [1, 2]] <br /><br />' +
+               'getLineIntersectionData(line1, line2, { <br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;onLinesAlreadyIntersect: function(x, y) {return false;} <br />' +
+               '}) === undefined');
+    })();
+    
+    (function() {
+        var line1 = [[10, 10], [30, 30]];
+        var line2 = [[20, 10], [50, 20]];
+        
+        var intersect = getLineIntersectionData(line1, line2, {
+            validateIntersection: function(x, y) {
+                if (x < line1[0][0] || x < line2[0][0]) {
+                    return false;
+                }
+            }
+        });
+        assert(intersect === undefined,
+               'For line1 = [[10, 10], [30, 30]], line2 = [[20, 10], [50, 20]] <br /><br />' +
+               'getLineIntersectionData(line1, line2, {<br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;validateIntersection: function(x, y) {<br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (x < line1[0][0] || x < line2[0][0]) {<br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;</br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />' +
+               '&nbsp;&nbsp;&nbsp;&nbsp;}<br />' +
+               '}) === undefined');
+    })();
+    
+    (function() {
+        var line1 = [[0, 1], [2, 1]];
+        var line2 = [[1, 0], [1, 2]];
+        
+        var point = {};
+        
+        var options = {
+            icptPoint: point
+        };
+        
+        var intersect = getLineIntersectionData(line1, line2, options);
+        assert(point.x === 1 && point.y === 1,
+               'Custom icptPoint test');
+    })();
+  </script>
+  </body>
+</html>

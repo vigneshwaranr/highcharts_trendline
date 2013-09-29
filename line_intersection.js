@@ -62,18 +62,21 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
          * 
          * (like =, ||, //)
          * 
-         * getLineIntersectionData() exits returning undefined after this method is called.
+         * getLineIntersectionData() always exits returning undefined if this method is called i.e. if lines are
+         * parallel.
          */
         onParallel: function () {
             console.log('Parallel lines can never meet');
         },
 
         /**
-         * Override this method to customize the behavior if the lines already intersect.
+         * Override this method to customize the behavior if the given line segments already intersect.
          * 
          * (like X, >, <)
          * 
+         * 
          * getLineIntersectionData() exits returning undefined if this function does not return true
+         * Otherwise proceeds as usual.
          * 
          * @param icptX - intersection point X
          * @param icptY - intersection point Y         
@@ -82,18 +85,26 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             // console.log('Lines already meet at (' + icptX + ',' + icptY + ')');
             return true;
         },
-
+        
         /**
-         * Accepts a boolean value.
+         * Accepts a callback function that returns true or false
+         * 
+         * Use this to validate the intersection points before connecting the lines.
          *
-         * For example, If you don't want the lines to meet beyond the left side of the first point of
-         * either of the lines, 
-         * set canConvergeLeft to false
-         *
-         * Note: Setting both of them to false has no use.
+         * For example, you might not want to connect the lines if the intersection point is too far away,
+         * or you might not want to connect the lines if the intersection point is to the left of the first points.
+         * If so, set it to a function that returns false. It'll avoid the unnecessary operation of adding the
+         * intersection point to the new line data when you don't need it.
+         * 
+         * getLineIntersectionData() exits returning undefined if this function does not return true
+         * Otherwise proceeds as usual.
+         * 
+         * @param icptX - intersection point X
+         * @param icptY - intersection point Y         
          */
-        canConvergeLeft: true,
-        canConvergeRight: true
+        validateIntersection: function (icptX, icptY) {
+            return true;
+        }
     };
 
     // Validate whether the first two arguments are of the form:
@@ -156,28 +167,6 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
             console.error('onParallel must be a function');
         }
         return;
-    } else if (denom > 0) {
-        // denom > 0 means lines converge towards right 
-        // (like > or X)
-        if (typeof opt.canConvergeRight === 'boolean') {
-            if (!opt.canConvergeRight) {
-                return;
-            }
-        } else {
-            console.error('canConvergeRight must be a boolean');
-            return;
-        }
-    } else {
-        // denom < 0 means lines converge towards left
-        // (like < or L)
-        if (typeof opt.canConvergeLeft === 'boolean') {
-            if (!opt.canConvergeLeft) {
-                return;
-            }
-        } else {
-            console.error('canConvergeLeft must be a boolean');
-            return;
-        }
     }
 
     var xNumer = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4),
@@ -194,6 +183,15 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
         } else {
             console.error('onLinesAlreadyMeet must be a function');
         }
+    }
+    
+    // Validate the intersection points before proceeding further
+    if (typeof opt.validateIntersection === 'function') {
+        if (!opt.validateIntersection(icptX, icptY)) {
+            return;
+        }
+    } else {
+        console.error('validateIntersection must be a function');
     }
 
     var point_type = Object.prototype.toString.call(opt.icptPoint);

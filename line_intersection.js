@@ -75,7 +75,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
          * (like X, >, <)
          * 
          * 
-         * getLineIntersectionData() exits returning undefined if this function does not return true
+         * getLineIntersectionData() exits returning undefined if this function explicitly returns false
          * Otherwise proceeds as usual.
          * 
          * @param icptX - intersection point X
@@ -96,7 +96,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
          * If so, set it to a function that returns false. It'll avoid the unnecessary operation of adding the
          * intersection point to the new line data when you don't need it.
          * 
-         * getLineIntersectionData() exits returning undefined if this function does not return true
+         * getLineIntersectionData() exits returning undefined if this function explicitly returns false
          * Otherwise proceeds as usual.
          * 
          * @param icptX - intersection point X
@@ -177,7 +177,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
     if (icptX >= x1 && icptX <= x2 && icptX >= x3 && icptX <= x4) {
         // The two lines already meet (like X, > or <)
         if (typeof opt.onLinesAlreadyIntersect === 'function') {
-            if (!opt.onLinesAlreadyIntersect(icptX, icptY)) {
+            if (opt.onLinesAlreadyIntersect(icptX, icptY) === false) {
                 return;
             }
         } else {
@@ -187,7 +187,7 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
     
     // Validate the intersection points before proceeding further
     if (typeof opt.validateIntersection === 'function') {
-        if (!opt.validateIntersection(icptX, icptY)) {
+        if (opt.validateIntersection(icptX, icptY) === false) {
             return;
         }
     } else {

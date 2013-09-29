@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="line_intersection.js : A JavaScript library to find the intersection of two straight lines (useful for charting libraries)" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>line_intersection.js</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/vigneshwaranr/line_intersection.js">View on GitHub</a>
+
+          <h1 id="project_title">line_intersection.js</h1>
+          <h2 id="project_tagline">A JavaScript library to find the intersection of two straight lines (useful for charting libraries)</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/vigneshwaranr/line_intersection.js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="line_intersectionjs" class="anchor" href="#line_intersectionjs"><span class="octicon octicon-link"></span></a>line_intersection.js</h1>
+
+<p>A JavaScript library to find the intersection of two straight lines (useful for charting libraries). Also includes a function that generate trendline from a chart data.</p>
+
+<p>Written originally for highcharts but can work with any charting library as long as they support line data in the format
+<code>[[x1, y1], [x2, y2], ... ]</code> such as <a href="http://www.flotcharts.org/">Flot</a>, <a href="http://www.liquidx.net/plotkit/">PlotKit</a>, <a href="http://www.jscharts.com/">JS Charts</a> etc.
+For other libraries, you will need to convert the data to this form and back after getting the intersection data.</p>
+
+<h2>
+<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>Methods</h2>
+
+<ul>
+<li>
+<p><strong>getLineIntersectionData(line1_data, line2_data, user_options)</strong></p>
+
+<p>Given two straight line data each of the form <code>[[x1, y1], [x2, y2], ... [xn, yn]]</code> this method will return an object that contains the intersection points and two "new line data" with the intersection point added. (Does not modify the input data!)</p>
+
+<p>If your data is not from a straight line but some chart data, use <code>getTrendlineData</code> to generate a straight trendline out of that data using Linear Regression.</p>
+</li>
+<li>
+<p><strong>getTrendlineData(data)</strong></p>
+
+<p>Given any linear chart data of the form <code>[[x1, y1], [x2, y2], ... [xn, yn]]</code> this method will generate a straight trendline using linear regression.</p>
+</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="getlineintersectiondataline1_data-line2_data-user_options" class="anchor" href="#getlineintersectiondataline1_data-line2_data-user_options"><span class="octicon octicon-link"></span></a>getLineIntersectionData(line1_data, line2_data, user_options)</h3>
+
+<p><strong>Documentation</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/**</span>
+<span class="cm"> * @param line1_data - Mandatory argument that contains the data of line1 of the form </span>
+<span class="cm"> *                      [[x1, y1], [x2, y2], ... [xn, yn]]</span>
+<span class="cm"> * </span>
+<span class="cm"> * @param line2_data - Mandatory argument that contains the data of line2 of the form </span>
+<span class="cm"> *                      [[x1, y1], [x2, y2], ... [xn, yn]]</span>
+<span class="cm"> * </span>
+<span class="cm"> * @param user_options - Optional argument that is an object containing custom options that overrides the default</span>
+<span class="cm"> *                      behavior of the method. Refer the comments for each option in the opt object for the valid</span>
+<span class="cm"> *                      values for that option.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns</span>
+<span class="cm"> * &gt; an object with the following properties</span>
+<span class="cm"> *     icptX - The intersection point X</span>
+<span class="cm"> *     icptY - The intersection point Y</span>
+<span class="cm"> *     line1_data - The new line1 data with intersection point added</span>
+<span class="cm"> *     line2_data - The new line2 data with intersection point added</span>
+<span class="cm"> * &gt; or returns undefined</span>
+<span class="cm"> *     if the lines are parallel,</span>
+<span class="cm"> *     if any of the first two arguments are not in the form [[x1, y1], [x2, y2], ... [xn, yn]]</span>
+<span class="cm"> *     if any of the line data has less than 2 points (it's not a line then)</span>
+<span class="cm"> *     if the user_options argument or any of the options inside it is not in the required format</span>
+<span class="cm"> *     if any callback set in user_options returns false</span>
+<span class="cm"> */</span>
+</pre></div>
+
+<p><strong>Basic example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">line1</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]];</span>
+<span class="kd">var</span> <span class="nx">line2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]];</span>
+<span class="kd">var</span> <span class="nx">forecast</span> <span class="o">=</span> <span class="nx">getLineIntersectionData</span><span class="p">(</span><span class="nx">line1</span><span class="p">,</span> <span class="nx">line2</span><span class="p">);</span>
+<span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">forecast</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="p">{</span><span class="s2">"icptX"</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"icptY"</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"line1_data"</span><span class="o">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span> <span class="s2">"line2_data"</span><span class="o">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]}</span>
+</pre></div>
+
+<p><strong>Example with chart</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">data1</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">]];</span>
+    <span class="kd">var</span> <span class="nx">data2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">]];</span>
+
+    <span class="kd">var</span> <span class="nx">forecast</span> <span class="o">=</span> <span class="nx">getLineIntersectionData</span><span class="p">(</span><span class="nx">data1</span><span class="p">,</span> <span class="nx">data2</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">chart_linear</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+        <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">renderTo</span><span class="o">:</span> <span class="s1">'container'</span>
+        <span class="p">},</span>
+        <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="c1">//getLineIntersectionData() may return undefined if lines can not intersect</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">forecast</span> <span class="o">&amp;&amp;</span> <span class="nx">forecast</span><span class="p">.</span><span class="nx">line1_data</span> <span class="o">||</span> <span class="nx">data1</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">forecast</span> <span class="o">&amp;&amp;</span> <span class="nx">forecast</span><span class="p">.</span><span class="nx">line2_data</span> <span class="o">||</span> <span class="nx">data2</span>
+        <span class="p">}]</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Output:</p>
+
+<p><img src="screenshots/getLineIntersectionData_basic_chart_example.png" alt="Basic chart example"></p>
+
+<h3>
+<a name="gettrendlinedatadata" class="anchor" href="#gettrendlinedatadata"><span class="octicon octicon-link"></span></a>getTrendlineData(data)</h3>
+
+<p>The code and this example were extracted from <a href="https://github.com/virtualstaticvoid/highcharts_trendline/tree/65d53dd1ce64648d97a2dbb49444bbb522cec313">highcharts_trendline</a></p>
+
+<p><strong>Documentation</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="cm">/** </span>
+<span class="cm"> * @param data - Mandatory argument that contains the chart data of the form </span>
+<span class="cm"> *                 [[x1, y1], [x2, y2], ... [xn, yn]]</span>
+<span class="cm"> *</span>
+<span class="cm"> * @returns an object containing the following properties</span>
+<span class="cm"> *      data - new array containing the data for the straight trendline</span>
+<span class="cm"> *      slope - slope of the trendline</span>
+<span class="cm"> *      intercept - intercept of the trendline</span>
+<span class="cm"> * </span>
+<span class="cm"> */</span>
+</pre></div>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// E.g. source data</span>
+    <span class="kd">var</span> <span class="nx">sourceData</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mf">106.4</span><span class="p">,</span> <span class="mf">271.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">129.2</span><span class="p">,</span> <span class="mf">213.4</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">295.6</span><span class="p">,</span> <span class="mf">432.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">154.4</span><span class="p">,</span> <span class="mf">398.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">129.9</span><span class="p">,</span> <span class="mf">133.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">271.5</span><span class="p">,</span> <span class="mf">432.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">144.0</span><span class="p">,</span> <span class="mf">134.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">176.0</span><span class="p">,</span> <span class="mf">399.2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">216.4</span><span class="p">,</span> <span class="mf">319.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">194.1</span><span class="p">,</span> <span class="mf">542.1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">435.6</span><span class="p">,</span> <span class="mf">665.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">348.5</span><span class="p">,</span> <span class="mf">435.9</span><span class="p">]</span>
+    <span class="p">];</span>
+
+    <span class="kd">var</span> <span class="nx">chart_linear</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+        <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">renderTo</span><span class="o">:</span> <span class="s1">'container'</span>
+        <span class="p">},</span>
+        <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">'scatter'</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">sourceData</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">marker</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">enabled</span><span class="o">:</span> <span class="kc">false</span>
+            <span class="p">},</span>
+            <span class="cm">/* function returns data for trend-line */</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">getTrendlineData</span><span class="p">(</span><span class="nx">sourceData</span><span class="p">).</span><span class="nx">data</span>
+        <span class="p">}]</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Output:</p>
+
+<p><img src="screenshots/getTrendlineData_scr1.png" alt="getTrendlineData screenshot 1"></p>
+
+<p><strong>Example using both methods</strong></p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">jQuery</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">data1</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">50</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">58</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">58</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">58</span><span class="p">]</span>
+    <span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">data2</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">12</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">18</span><span class="p">],</span>
+        <span class="p">[</span><span class="nb">Date</span><span class="p">.</span><span class="nx">UTC</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">22</span><span class="p">]</span>
+    <span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">data1_t</span> <span class="o">=</span> <span class="nx">getTrendlineData</span><span class="p">(</span><span class="nx">data1</span><span class="p">).</span><span class="nx">data</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">data2_t</span> <span class="o">=</span> <span class="nx">getTrendlineData</span><span class="p">(</span><span class="nx">data2</span><span class="p">).</span><span class="nx">data</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">icptPoint</span><span class="o">:</span> <span class="p">{</span>
+            <span class="c1">//name: 'Possible release date',</span>
+            <span class="nx">marker</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">fillColor</span><span class="o">:</span> <span class="s1">'#003300'</span><span class="p">,</span>
+                <span class="nx">lineColor</span><span class="o">:</span> <span class="s1">'#003300'</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="nx">canConvergeLeft</span><span class="o">:</span> <span class="kc">false</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">forecast</span> <span class="o">=</span> <span class="nx">getLineIntersectionData</span><span class="p">(</span><span class="nx">data1_t</span><span class="p">,</span> <span class="nx">data2_t</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">chart_linear</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+        <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">renderTo</span><span class="o">:</span> <span class="s1">'container'</span>
+        <span class="p">},</span>
+        <span class="nx">colors</span><span class="o">:</span> <span class="p">[</span><span class="s1">'#990000'</span><span class="p">,</span> <span class="s1">'#4679BD'</span><span class="p">,</span> <span class="s1">'#990000'</span><span class="p">,</span> <span class="s1">'#4679BD'</span><span class="p">],</span>
+        <span class="nx">xAxis</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">type</span><span class="o">:</span> <span class="s1">'datetime'</span><span class="p">,</span>
+            <span class="nx">gridLineWidth</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nx">gridLineDashStyle</span><span class="o">:</span> <span class="s1">'shortdot'</span>
+        <span class="p">},</span>
+        <span class="nx">yAxis</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="nx">gridLineDashStyle</span><span class="o">:</span> <span class="s1">'shortdot'</span>
+        <span class="p">},</span>
+        <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">text</span><span class="o">:</span> <span class="s1">'Estimating release date'</span>
+        <span class="p">},</span>
+        <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">'Total issues'</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">data1</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">'Closed issues'</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">data2</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">'Total issues trend'</span><span class="p">,</span>
+            <span class="c1">//getLineIntersectionData() may return undefined if lines can not intersect</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">forecast</span> <span class="o">&amp;&amp;</span> <span class="nx">forecast</span><span class="p">.</span><span class="nx">line1_data</span> <span class="o">||</span> <span class="nx">data1_t</span><span class="p">,</span>
+            <span class="nx">marker</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">enabled</span><span class="o">:</span> <span class="kc">false</span>
+            <span class="p">},</span>
+            <span class="nx">dashStyle</span><span class="o">:</span> <span class="s1">'longDash'</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s1">'Closed issues trend'</span><span class="p">,</span>
+            <span class="nx">data</span><span class="o">:</span> <span class="nx">forecast</span> <span class="o">&amp;&amp;</span> <span class="nx">forecast</span><span class="p">.</span><span class="nx">line2_data</span> <span class="o">||</span> <span class="nx">data2_t</span><span class="p">,</span>
+            <span class="nx">marker</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">enabled</span><span class="o">:</span> <span class="kc">false</span>
+            <span class="p">},</span>
+            <span class="nx">dashStyle</span><span class="o">:</span> <span class="s1">'longDash'</span><span class="p">,</span>
+        <span class="p">}]</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Output:</p>
+
+<p><img src="screenshots/trend_forecast.png" alt="Trend forecast"></p>
+
+<h2>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<ul>
+<li>
+<a href="https://github.com/virtualstaticvoid/highcharts_trendline">virtualstaticvoid/highcharts_trendline</a> - The getTrendlineData method is extracted from this library which itself extracted code from <a href="http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html">jqplot.trendline.js</a>
+</li>
+<li>
+<a href="http://stackoverflow.com/a/18850800/883832">John Kiernander</a> - for giving me a groundwork that inspired me to do this</li>
+<li>
+<a href="http://en.wikipedia.org/w/index.php?title=Line-line_intersection&amp;oldid=570896016#Mathematics">Wikipedia</a> - for the line intersection formula</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">line_intersection.js maintained by <a href="https://github.com/vigneshwaranr">vigneshwaranr</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

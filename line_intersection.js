@@ -98,9 +98,12 @@ function getLineIntersectionData(line1_data, line2_data, user_options) {
 
     // Validate whether the first two arguments are of the form:
     // [[x1, y1], [x2, y2], ... [xn, yn]]
-    var _tmp_arr = [line1_data, line2_data, line1_data[0], line2_data[0]];
+    var _tmp_arr = [line1_data, line2_data;
     for (var i = 0; i < _tmp_arr.length; i++) {
-        if (_tmp_arr[i] == null || Object.prototype.toString.call(_tmp_arr[i]) !== "[object Array]") {
+        if (_tmp_arr[i] == null
+                || Object.prototype.toString.call(_tmp_arr[i]) !== "[object Array]"
+                || Object.prototype.toString.call(_tmp_arr[i][0]) !== "[object Array]"
+                || Object.prototype.toString.call(_tmp_arr[i][1]) !== "[object Array]") {
             console.error('The first two arguments should each be of ' +
                           'the form: [[x1, y1], [x2, y2], ... [xn, yn]]');
             return;

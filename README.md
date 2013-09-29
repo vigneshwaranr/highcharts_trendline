@@ -82,7 +82,7 @@ jQuery(function () {
 ```
 Output:
 
-![Basic chart example](screenshots/getLineIntersectionData_basic_chart_example.png)
+![Basic chart example](https://raw.github.com/vigneshwaranr/line_intersection.js/master/screenshots/getLineIntersectionData_basic_chart_example.png)
 
 
 ### getTrendlineData(data)
@@ -134,7 +134,7 @@ jQuery(function () {
 ```
 Output:
 
-![getTrendlineData screenshot 1](screenshots/getTrendlineData_scr1.png)
+![getTrendlineData screenshot 1](https://raw.github.com/vigneshwaranr/line_intersection.js/master/screenshots/getTrendlineData_scr1.png)
 
 **Example using both methods**
 ```javascript
@@ -211,7 +211,7 @@ jQuery(function () {
 
 Output:
 
-![Trend forecast](screenshots/trend_forecast.png)
+![Trend forecast](https://raw.github.com/vigneshwaranr/line_intersection.js/master/screenshots/trend_forecast.png)
 
 ##Credits
 * [virtualstaticvoid/highcharts_trendline](https://github.com/virtualstaticvoid/highcharts_trendline) - The getTrendlineData method is extracted from this library which itself extracted code from [jqplot.trendline.js](http://www.jqplot.com/docs/files/plugins/jqplot-trendline-js.html)
